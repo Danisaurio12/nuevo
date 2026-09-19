@@ -45,8 +45,9 @@ def nuevo_producto():
     if request.method == "POST":
         datos = _leer_datos_formulario(request.form)
 
-        if not _validar_datos(datos):
-            flash("Todos los campos son obligatorios y deben tener un valor válido.", "danger")
+        error_validacion = _validar_datos(datos)
+        if error_validacion:
+            flash(error_validacion, "danger")
             return render_template("formulario.html", producto=request.form, accion="Registrar")
 
         conn = get_connection()
@@ -93,10 +94,11 @@ def editar_producto(id):
     if request.method == "POST":
         datos = _leer_datos_formulario(request.form)
 
-        if not _validar_datos(datos):
+        error_validacion = _validar_datos(datos)
+        if error_validacion:
             cur.close()
             conn.close()
-            flash("Todos los campos son obligatorios y deben tener un valor válido.", "danger")
+            flash(error_validacion, "danger")
             return render_template("formulario.html", producto=request.form, accion="Editar")
 
         try:
@@ -184,15 +186,31 @@ def _leer_datos_formulario(form):
 
 
 def _validar_datos(datos):
-    """Valida que los campos obligatorios estén presentes y sean numéricos válidos."""
+    """Valida los datos del formulario de producto.
+
+    Devuelve None si todo es válido, o un mensaje de error específico
+    (string) indicando cuál fue el problema, para mostrarlo al usuario.
+    """
     if not all([datos["codigo"], datos["nombre"], datos["categoria"], datos["precio"], datos["existencia"]]):
-        return False
+        return "Todos los campos son obligatorios."
+
     try:
         precio = float(datos["precio"])
+    except ValueError:
+        return "El precio debe ser un número válido."
+
+    try:
         existencia = int(datos["existencia"])
     except ValueError:
-        return False
-    return precio >= 0 and existencia >= 0
+        return "La existencia debe ser un número entero."
+
+    if precio <= 0:
+        return "El precio debe ser mayor que cero."
+
+    if existencia < 0:
+        return "La existencia no puede ser negativa."
+
+    return None
 
 
 if __name__ == "__main__":
