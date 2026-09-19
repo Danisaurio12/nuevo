@@ -126,7 +126,16 @@ git config user.email "tu_correo@ejemplo.com"
 > repositorio local existente ("Add local repository") y luego
 > "Publish repository".
 
+## Validaciones
+
+- Campos obligatorios: código, nombre, categoría, precio y existencia.
+- El **precio** debe ser mayor que cero (validado en el formulario con `min="0.01"` y en el servidor).
+- La **existencia** no puede ser negativa (validado en el formulario con `min="0"` y en el servidor).
+- El **código** debe ser único; si ya existe, se muestra un mensaje de error específico.
+- Cada acción (registrar, editar, eliminar) muestra un mensaje `flash` de éxito o error, visible en la parte superior de la página.
+
 ## Notas de seguridad
 
 - Ninguna credencial de PostgreSQL está en el código: todo se lee desde `.env` mediante `python-dotenv`.
 - `.env` está excluido por `.gitignore`; solo `.env.example` (sin datos reales) se versiona.
+- Todas las consultas que reciben datos del usuario (listado con búsqueda, registro, edición, eliminación) usan **consultas parametrizadas** de psycopg2 (`%s` + tupla de valores), nunca concatenación ni f-strings dentro del SQL. Esto evita inyección SQL.
