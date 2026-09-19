@@ -11,11 +11,36 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url_for('listado') }}">
                 🖥️ Inventario Tienda de Tecnología
             </a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu"
+                aria-expanded="false"
+                aria-label="Mostrar navegación"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'listado' else '' }}" href="{{ url_for('listado') }}">
+                            Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'nuevo_producto' else '' }}" href="{{ url_for('nuevo_producto') }}">
+                            Nuevo producto
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
