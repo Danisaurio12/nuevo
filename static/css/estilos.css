@@ -1,0 +1,11 @@
+body {
+    background-color: #f5f7fa;
+}
+
+.table thead th {
+    white-space: nowrap;
+}
+
+.navbar-brand {
+    letter-spacing: 0.5px;
+}
